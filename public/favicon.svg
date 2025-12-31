@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- Outer gradient -->
+    <linearGradient id="borderGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#CDEFAE"/>
+      <stop offset="100%" stop-color="#8DB5FF"/>
+    </linearGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Outer rounded square -->
+  <rect
+    x="4"
+    y="4"
+    width="56"
+    height="56"
+    rx="14"
+    fill="url(#borderGradient)"
+    filter="url(#shadow)"
+  />
+
+  <!-- Inner white rounded square -->
+  <rect
+    x="10"
+    y="10"
+    width="44"
+    height="44"
+    rx="12"
+    fill="#FFFFFF"
+  />
+
+  <!-- Pipeline dots (no arrows) -->
+  <circle cx="22" cy="32" r="5" fill="#3B82F6"/>
+  <circle cx="32" cy="32" r="5" fill="#F59E0B"/>
+  <circle cx="42" cy="32" r="5" fill="#10B981"/>
+</svg>
