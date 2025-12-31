@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 256">
+  <defs>
+    <!-- Gradient border -->
+    <linearGradient id="borderGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#CDEFAE"/>
+      <stop offset="100%" stop-color="#8DB5FF"/>
+    </linearGradient>
+
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <!-- Outer rounded rectangle (wider) -->
+  <rect
+    x="24"
+    y="24"
+    width="272"
+    height="208"
+    rx="52"
+    fill="url(#borderGradient)"
+    filter="url(#shadow)"
+  />
+
+  <!-- Inner white rounded rectangle -->
+  <rect
+    x="52"
+    y="52"
+    width="216"
+    height="152"
+    rx="36"
+    fill="#FFFFFF"
+  />
+
+  <!-- Pipeline dots (more spacing) -->
+  <circle cx="104" cy="128" r="17" fill="#3B82F6"/>
+  <circle cx="160" cy="128" r="17" fill="#F59E0B"/>
+  <circle cx="216" cy="128" r="17" fill="#10B981"/>
+
+  <!-- Connecting lines (longer) -->
+  <path d="M122 128H140" stroke="#6B7280" stroke-width="4" stroke-linecap="round"/>
+  <path d="M178 128H196" stroke="#6B7280" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Arrow heads (small & clean) -->
+  <path
+    d="M136 124 L142 128 L136 132"
+    fill="none"
+    stroke="#6B7280"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M192 124 L198 128 L192 132"
+    fill="none"
+    stroke="#6B7280"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
