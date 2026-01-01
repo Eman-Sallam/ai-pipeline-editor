@@ -1,31 +1,42 @@
+import {
+  CircleStackIcon,
+  Cog6ToothIcon,
+  SparklesIcon,
+  ArchiveBoxIcon,
+} from '@heroicons/react/24/solid';
+
 const NodePalette = () => {
   const nodeTypes = [
     {
       id: 1,
       name: 'Data Source',
-      icon: '📊',
+      Icon: CircleStackIcon,
       bgColor: 'bg-blue-100',
+      iconColor: 'text-blue-600',
       description: 'Import data from various sources',
     },
     {
       id: 2,
       name: 'Transformer',
-      icon: '⚙️',
+      Icon: Cog6ToothIcon,
       bgColor: 'bg-orange-100',
+      iconColor: 'text-orange-600',
       description: 'Transform and process data',
     },
     {
       id: 3,
       name: 'Model',
-      icon: '⭐',
+      Icon: SparklesIcon,
       bgColor: 'bg-purple-100',
+      iconColor: 'text-purple-600',
       description: 'Machine learning models',
     },
     {
       id: 4,
       name: 'Sink',
-      icon: '💾',
+      Icon: ArchiveBoxIcon,
       bgColor: 'bg-green-100',
+      iconColor: 'text-green-600',
       description: 'Export data to destinations',
     },
   ];
@@ -67,8 +78,10 @@ const NodePalette = () => {
               >
                 <div className='card-body p-3'>
                   <div className='flex items-center gap-3'>
-                    <div className={`text-2xl p-2 rounded-lg ${node.bgColor}`}>
-                      {node.icon}
+                    <div
+                      className={`p-2 rounded-lg ${node.bgColor} flex items-center justify-center`}
+                    >
+                      <node.Icon className={`w-6 h-6 ${node.iconColor}`} />
                     </div>
                     <div className='flex-1 min-w-0'>
                       <h3 className='font-semibold text-sm truncate'>

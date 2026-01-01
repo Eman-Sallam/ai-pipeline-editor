@@ -17,7 +17,7 @@ const EditorHeader = () => {
       {/* Execute button */}
       <button
         onClick={handleExecute}
-        className='btn btn-success btn-sm flex items-center gap-2'
+        className='btn btn-accent btn-sm flex items-center gap-2'
       >
         <PlayIcon className='w-4 h-4' />
         Execute
