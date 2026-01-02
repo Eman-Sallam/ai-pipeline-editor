@@ -13,6 +13,7 @@ const NodePalette = () => {
       Icon: CircleStackIcon,
       bgColor: 'bg-blue-100',
       iconColor: 'text-blue-600',
+      borderColor: 'border-blue-600',
       description: 'Import data from various sources',
     },
     {
@@ -21,6 +22,7 @@ const NodePalette = () => {
       Icon: Cog6ToothIcon,
       bgColor: 'bg-orange-100',
       iconColor: 'text-orange-600',
+      borderColor: 'border-orange-600',
       description: 'Transform and process data',
     },
     {
@@ -29,6 +31,7 @@ const NodePalette = () => {
       Icon: SparklesIcon,
       bgColor: 'bg-purple-100',
       iconColor: 'text-purple-600',
+      borderColor: 'border-purple-600',
       description: 'Machine learning models',
     },
     {
@@ -37,6 +40,7 @@ const NodePalette = () => {
       Icon: ArchiveBoxIcon,
       bgColor: 'bg-green-100',
       iconColor: 'text-green-600',
+      borderColor: 'border-green-600',
       description: 'Export data to destinations',
     },
   ];
@@ -73,8 +77,18 @@ const NodePalette = () => {
             {nodeTypes.map((node) => (
               <div
                 key={node.id}
-                className='card card-compact bg-base-100 shadow-sm hover:shadow-md transition-shadow cursor-move border border-base-300'
+                className={`card card-compact bg-base-100 shadow-sm hover:shadow-md transition-shadow cursor-move border-l-4 ${node.borderColor}`}
                 draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData(
+                    'application/reactflow',
+                    JSON.stringify({
+                      type: String(node.id),
+                      name: node.name,
+                    })
+                  );
+                  e.dataTransfer.effectAllowed = 'move';
+                }}
               >
                 <div className='card-body p-3'>
                   <div className='flex items-center gap-3'>
