@@ -1,7 +1,7 @@
-import EditorHeader from '../components/EditorHeader';
-import NodePalette from '../components/NodePalette';
-import FlowCanvas from '../components/FlowCanvas';
-import ExecutionLog from '../components/ExecutionLog';
+import EditorHeader from '../components/shared/EditorHeader';
+import NodePalette from '../components/pipeline/NodePalette';
+import FlowCanvas from '../components/pipeline/FlowCanvas';
+import ExecutionLog from '../components/pipeline/ExecutionLog';
 
 const EditorPage = () => {
   return (

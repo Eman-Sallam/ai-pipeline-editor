@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
-import type { PipelineNodeData } from '../types/pipeline';
+import type { PipelineNodeData } from '../../types/pipeline';
 import {
   CircleStackIcon,
   Cog6ToothIcon,

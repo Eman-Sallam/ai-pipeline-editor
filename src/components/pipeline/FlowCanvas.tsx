@@ -9,10 +9,10 @@ import ReactFlow, {
   type ReactFlowInstance,
 } from 'reactflow';
 import type { Node, Edge, Connection, NodeTypes } from 'reactflow';
-import type { PipelineNodeData } from '../types/pipeline';
+import type { PipelineNodeData } from '../../types/pipeline';
 import PipelineNode from './PipelineNode.tsx';
-import { validateConnection } from '../graph/validation';
-import Toast, { type ToastMessage } from './Toast';
+import { validateConnection } from '../../graph/validation';
+import Toast, { type ToastMessage } from '../shared/Toast';
 
 const nodeTypes: NodeTypes = {
   pipelineNode: PipelineNode,
