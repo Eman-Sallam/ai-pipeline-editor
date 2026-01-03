@@ -109,8 +109,8 @@ const FlowCanvas = () => {
         onConnect={onConnect}
         onInit={onInit}
         nodeTypes={nodeTypes}
-        fitView
         className='bg-base-100'
+        defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
         <Background />
         <Controls />
