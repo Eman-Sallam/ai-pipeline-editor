@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -11,6 +11,8 @@ import ReactFlow, {
 import type { Node, Edge, Connection, NodeTypes } from 'reactflow';
 import type { PipelineNodeData } from '../types/pipeline';
 import PipelineNode from './PipelineNode.tsx';
+import { validateConnection } from '../graph/validation';
+import Toast, { type ToastMessage } from './Toast';
 
 const nodeTypes: NodeTypes = {
   pipelineNode: PipelineNode,
@@ -22,14 +24,29 @@ const initialEdges: Edge[] = [];
 const FlowCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
 
   const onConnect = useCallback(
     (params: Connection) => {
+      // Validate the connection before adding it
+      const validation = validateConnection(params, edges);
+
+      if (!validation.valid) {
+        // Show error toast
+        setToast({
+          id: `toast-${Date.now()}`,
+          message: validation.error || 'Invalid connection',
+          type: 'error',
+        });
+        return;
+      }
+
+      // Connection is valid, add it
       setEdges((eds) => addEdge(params, eds));
     },
-    [setEdges]
+    [setEdges, edges]
   );
 
   const onInit = useCallback((instance: ReactFlowInstance) => {
@@ -99,6 +116,7 @@ const FlowCanvas = () => {
         <Controls />
         <MiniMap />
       </ReactFlow>
+      <Toast message={toast} onClose={() => setToast(null)} />
     </div>
   );
 };
