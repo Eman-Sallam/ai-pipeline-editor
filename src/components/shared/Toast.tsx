@@ -4,6 +4,10 @@ export interface ToastMessage {
   id: string;
   message: string;
   type?: 'info' | 'success' | 'warning' | 'error';
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 interface ToastProps {
@@ -14,7 +18,7 @@ interface ToastProps {
 
 /**
  * Toast component using DaisyUI toast and alert
- * Displays a temporary notification message
+ * Displays a temporary notification message with optional action button
  */
 const Toast = ({ message, onClose, duration = 5000 }: ToastProps) => {
   useEffect(() => {
@@ -40,9 +44,22 @@ const Toast = ({ message, onClose, duration = 5000 }: ToastProps) => {
       : 'alert-info';
 
   return (
-    <div className='toast toast-center toast-top'>
-      <div className={`alert alert-soft ${alertClass}`}>
-        <span>{message.message}</span>
+    <div className='toast toast-center toast-top z-50 mt-4 w-full max-w-lg px-4'>
+      <div
+        className={`alert alert-soft alert-vertical sm:alert-horizontal items-center gap-3 ${alertClass} shadow-lg w-full`}
+      >
+        <span className='text-center'>{message.message}</span>
+        {message.action && (
+          <button
+            className='btn btn-sm'
+            onClick={() => {
+              message.action?.onClick();
+              onClose();
+            }}
+          >
+            {message.action.label}
+          </button>
+        )}
       </div>
     </div>
   );
