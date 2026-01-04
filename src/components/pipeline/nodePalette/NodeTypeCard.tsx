@@ -9,8 +9,9 @@ export const NodeTypeCard = ({ node }: NodeTypeCardProps) => {
     e.dataTransfer.setData(
       'application/reactflow',
       JSON.stringify({
-        type: String(node.id),
+        type: node.name, // Use name (e.g., "Data Source") not ID for log templates
         name: node.name,
+        id: node.id, // Keep ID for reference if needed
       })
     );
     e.dataTransfer.effectAllowed = 'move';

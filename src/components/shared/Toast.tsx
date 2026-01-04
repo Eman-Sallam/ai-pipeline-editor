@@ -20,7 +20,7 @@ interface ToastProps {
  * Toast component using DaisyUI toast and alert
  * Displays a temporary notification message with optional action button
  */
-const Toast = ({ message, onClose, duration = 5000 }: ToastProps) => {
+const Toast = ({ message, onClose, duration = 6000 }: ToastProps) => {
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {

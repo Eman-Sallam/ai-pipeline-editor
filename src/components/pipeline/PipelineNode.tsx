@@ -1,61 +1,23 @@
 import { memo } from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import type { PipelineNodeData } from '../../types/pipeline';
-import {
-  CircleStackIcon,
-  Cog6ToothIcon,
-  SparklesIcon,
-  ArchiveBoxIcon,
-} from '@heroicons/react/24/solid';
+import { NODE_TYPE_CONFIG, DEFAULT_CONFIG } from './nodePalette/nodeTypeConfig';
 
-// Map node types to their icons and colors
-const nodeTypeConfig: Record<
-  string,
-  {
-    Icon: React.ComponentType<{ className?: string }>;
-    bgColor: string;
-    iconColor: string;
-    borderColor: string;
-  }
-> = {
-  '1': {
-    Icon: CircleStackIcon,
-    bgColor: 'bg-blue-100',
-    iconColor: 'text-blue-600',
-    borderColor: 'border-blue-600',
-  },
-  '2': {
-    Icon: Cog6ToothIcon,
-    bgColor: 'bg-orange-100',
-    iconColor: 'text-orange-600',
-    borderColor: 'border-orange-600',
-  },
-  '3': {
-    Icon: SparklesIcon,
-    bgColor: 'bg-purple-100',
-    iconColor: 'text-purple-600',
-    borderColor: 'border-purple-600',
-  },
-  '4': {
-    Icon: ArchiveBoxIcon,
-    bgColor: 'bg-green-100',
-    iconColor: 'text-green-600',
-    borderColor: 'border-green-600',
-  },
-};
+// Map node types to their icons and colors using the same config as NodePalette
+const nodeTypeConfig = NODE_TYPE_CONFIG;
 
-const PipelineNode = ({ data }: NodeProps<PipelineNodeData>) => {
-  const config = nodeTypeConfig[data.type] || {
-    Icon: Cog6ToothIcon,
-    bgColor: 'bg-gray-100',
-    iconColor: 'text-gray-600',
-    borderColor: 'border-gray-600',
-  };
+const PipelineNode = ({ data, selected }: NodeProps<PipelineNodeData>) => {
+  // Use node type name (e.g., "Data Source") to get config, fallback to default
+  const config = nodeTypeConfig[data.type] || DEFAULT_CONFIG;
   const { Icon, borderColor } = config;
 
   return (
     <div
-      className={`bg-base-100 rounded-lg shadow-md border-l-4 ${borderColor} min-w-[150px]`}
+      className={`bg-base-100 rounded-lg border-l-4 ${borderColor} min-w-[150px] transition-all ${
+        selected
+          ? 'shadow-xl ring-1 ring-gray-400'
+          : 'shadow-md hover:shadow-lg'
+      }`}
     >
       {/* Input handle */}
       <Handle

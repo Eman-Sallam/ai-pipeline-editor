@@ -1,9 +1,11 @@
 import { PlayIcon } from '@heroicons/react/24/solid';
+import { usePipeline } from '../../contexts/PipelineContext';
 
 const EditorHeader = () => {
-  const handleExecute = () => {
-    // TODO: Implement execute functionality
-    console.log('Execute clicked');
+  const { executePipeline, isExecuting, executionStatus } = usePipeline();
+
+  const handleExecute = async () => {
+    await executePipeline();
   };
 
   return (
@@ -17,10 +19,22 @@ const EditorHeader = () => {
       {/* Execute button */}
       <button
         onClick={handleExecute}
-        className='btn btn-accent btn-sm flex items-center gap-2'
+        disabled={isExecuting}
+        className={`btn btn-accent btn-sm flex items-center gap-2 ${
+          isExecuting ? 'loading' : ''
+        }`}
       >
-        <PlayIcon className='w-4 h-4' />
-        Execute
+        {isExecuting ? (
+          <>
+            <span className='loading loading-spinner loading-xs'></span>
+            Running...
+          </>
+        ) : (
+          <>
+            <PlayIcon className='w-4 h-4' />
+            Execute
+          </>
+        )}
       </button>
     </header>
   );

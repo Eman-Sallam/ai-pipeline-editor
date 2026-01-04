@@ -4,29 +4,42 @@ import ReactFlow, {
   Controls,
   MiniMap,
   addEdge,
-  useNodesState,
-  useEdgesState,
+  applyNodeChanges,
+  applyEdgeChanges,
+  type NodeChange,
+  type EdgeChange,
   type ReactFlowInstance,
 } from 'reactflow';
-import type { Node, Edge, Connection, NodeTypes } from 'reactflow';
+import type { Node, Connection, NodeTypes } from 'reactflow';
 import type { PipelineNodeData } from '../../types/pipeline';
 import PipelineNode from './PipelineNode.tsx';
 import { validateConnection } from '../../graph/validation';
 import Toast, { type ToastMessage } from '../shared/Toast';
+import { usePipeline } from '../../contexts/PipelineContext';
 
 const nodeTypes: NodeTypes = {
   pipelineNode: PipelineNode,
 };
 
-const initialNodes: Node<PipelineNodeData>[] = [];
-const initialEdges: Edge[] = [];
-
 const FlowCanvas = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { nodes, setNodes, edges, setEdges } = usePipeline();
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
+
+  const onNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      setNodes((nds) => applyNodeChanges(changes, nds));
+    },
+    [setNodes]
+  );
+
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange[]) => {
+      setEdges((eds) => applyEdgeChanges(changes, eds));
+    },
+    [setEdges]
+  );
 
   const onConnect = useCallback(
     (params: Connection) => {
