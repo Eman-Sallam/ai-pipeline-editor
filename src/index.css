@@ -1,2 +1,16 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/* ReactFlow Handle Styles */
+.react-flow__handle {
+  background-color: #9ca3af !important;
+  border: 2px solid #4b5563 !important;
+  width: 8px !important;
+  height: 8px !important;
+}
+
+/* Dark theme support */
+[data-theme="dark"] .react-flow__handle {
+  background-color: #4b5563 !important;
+  border: 1px solid #e5e7eb !important;
+}

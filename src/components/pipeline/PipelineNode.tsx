@@ -60,8 +60,13 @@ const PipelineNode = ({ data }: NodeProps<PipelineNodeData>) => {
       {/* Input handle */}
       <Handle
         type='target'
-        position={Position.Top}
-        className='bg-base-300 border-2 border-base-content'
+        position={Position.Left}
+        style={{
+          backgroundColor: '#9ca3af',
+          border: '2px solid #4b5563',
+          width: '8px',
+          height: '8px',
+        }}
       />
 
       {/* Node content */}
@@ -100,8 +105,13 @@ const PipelineNode = ({ data }: NodeProps<PipelineNodeData>) => {
       {/* Output handle */}
       <Handle
         type='source'
-        position={Position.Bottom}
-        className='bg-base-300 border-2 border-base-content'
+        position={Position.Right}
+        style={{
+          backgroundColor: '#9ca3af',
+          border: '2px solid #4b5563',
+          width: '8px',
+          height: '8px',
+        }}
       />
     </div>
   );
