@@ -53,13 +53,13 @@ const ExecutionLog = () => {
     .map((execution) => execution.reverse());
 
   return (
-    <aside className='w-[250px] bg-base-200 border-r md:border-r-0 md:border-l border-base-300 h-full flex flex-col'>
-      <div className='p-4 border-b border-base-300'>
-        <div className='flex items-center justify-between'>
-          <h2 className='text-lg font-semibold'>Execution Log</h2>
+    <aside className='w-full md:w-[250px] bg-base-200 border-r md:border-r-0 md:border-l border-base-300 h-[180px] md:h-full flex flex-col shrink-0'>
+      <div className='p-2 md:p-4 border-b border-base-300'>
+        <div className='flex items-center justify-between gap-2'>
+          <h2 className='text-sm md:text-lg font-semibold'>Execution Log</h2>
           <button
             onClick={clearLogs}
-            className='btn btn-ghost btn-xs'
+            className='btn btn-ghost btn-xs text-xs'
             disabled={logs.length === 0}
           >
             Clear Logs
@@ -68,7 +68,7 @@ const ExecutionLog = () => {
       </div>
 
       {/* Log entries container with scroll */}
-      <div ref={logContainerRef} className='flex-1 overflow-y-auto p-4'>
+      <div ref={logContainerRef} className='flex-1 overflow-y-auto p-2 md:p-4'>
         {logs.length === 0 ? (
           <div className='text-center text-base-content/50 text-sm py-8'>
             No logs yet. Execute the pipeline to see logs here.

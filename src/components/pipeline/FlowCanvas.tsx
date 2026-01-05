@@ -68,6 +68,7 @@ const FlowCanvas = () => {
 
   const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
   }, []);
 
@@ -110,9 +111,10 @@ const FlowCanvas = () => {
   return (
     <div
       ref={reactFlowWrapper}
-      className='flex-1 relative overflow-hidden bg-base-100'
+      className='flex-1 relative overflow-hidden bg-base-100 min-h-0 w-full'
       onDragOver={onDragOver}
       onDrop={onDrop}
+      style={{ touchAction: 'none' }}
     >
       <ReactFlow
         nodes={nodes}

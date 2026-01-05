@@ -15,13 +15,16 @@ export const NodeTypeCard = ({ node }: NodeTypeCardProps) => {
       })
     );
     e.dataTransfer.effectAllowed = 'move';
+    // Prevent default to allow drag on mobile
+    e.dataTransfer.dropEffect = 'move';
   };
 
   return (
     <div
-      className={`card card-compact bg-base-100 shadow-sm hover:shadow-md transition-shadow cursor-move border-l-4 ${node.borderColor}`}
+      className={`card card-compact bg-base-100 shadow-sm hover:shadow-md transition-shadow cursor-move border-l-4 ${node.borderColor} touch-none`}
       draggable
       onDragStart={handleDragStart}
+      style={{ touchAction: 'none' }}
     >
       <div className='card-body p-3'>
         <div className='flex items-center gap-3'>

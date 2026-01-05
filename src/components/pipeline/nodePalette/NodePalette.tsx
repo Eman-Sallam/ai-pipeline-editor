@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { fetchNodeTypes, ApiError } from '../../../api/nodesApi';
 import Toast, { type ToastMessage } from '../../shared/Toast';
 import { mapApiNodeToUI, type NodeTypeWithUI } from './nodeTypeConfig';
@@ -6,7 +7,12 @@ import { NodePaletteSkeleton } from './NodePaletteSkeleton';
 import { NodePaletteError } from './NodePaletteError';
 import { NodeTypeCard } from './NodeTypeCard';
 
-const NodePalette = () => {
+interface NodePaletteProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const NodePalette = ({ isOpen = true, onClose }: NodePaletteProps) => {
   const [nodeTypes, setNodeTypes] = useState<NodeTypeWithUI[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,9 +61,25 @@ const NodePalette = () => {
   return (
     <>
       <Toast message={toast} onClose={handleToastClose} duration={7000} />
-      <aside className='w-[250px] bg-base-200 border-r border-base-300 overflow-y-auto h-full'>
+      {/* Sidebar/Drawer */}
+      <aside
+        className={`fixed md:static inset-y-0 left-0 z-50 md:z-auto w-[250px] bg-base-200 border-r border-base-300 overflow-y-auto h-full transition-transform duration-300 ease-in-out shadow-lg md:shadow-none ${
+          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
         <div className='p-4'>
-          <h2 className='text-lg font-semibold mb-4'>Node Palette</h2>
+          <div className='flex items-center justify-between mb-4'>
+            <h2 className='text-lg font-semibold'>Node Palette</h2>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className='btn btn-ghost btn-sm btn-square md:hidden'
+                aria-label='Close menu'
+              >
+                <XMarkIcon className='w-5 h-5' />
+              </button>
+            )}
+          </div>
           <div className='space-y-2'>
             {/* Node types list */}
             <div className='space-y-2'>
