@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* @plugin is a valid Tailwind CSS v4 directive - ignore linter warning */
 @plugin "daisyui";
 
 /* ReactFlow Handle Styles */

@@ -12,7 +12,7 @@ import ReactFlow, {
 } from 'reactflow';
 import type { Node, Connection, NodeTypes } from 'reactflow';
 import type { PipelineNodeData } from '../../types/pipeline';
-import PipelineNode from './PipelineNode.tsx';
+import PipelineNode from './PipelineNode';
 import { validateConnection } from '../../graph/validation';
 import Toast, { type ToastMessage } from '../shared/Toast';
 import { usePipeline } from '../../contexts/PipelineContext';
