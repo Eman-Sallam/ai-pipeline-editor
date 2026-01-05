@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type { Node, Edge } from 'reactflow';
 import type { PipelineNodeData, NodeStatus } from '../types/pipeline';
 import {
@@ -12,7 +12,7 @@ import {
 } from '../graph/execution';
 
 /**
- * Hook for managing pipeline execution state and logic
+ * Hook responsible for pipeline execution logic and state.
  */
 export function usePipelineExecution() {
   const [executionStatus, setExecutionStatus] =
@@ -20,8 +20,12 @@ export function usePipelineExecution() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [isExecuting, setIsExecuting] = useState(false);
 
+  // Synchronous lock to prevent concurrent execution
+  const isExecutingRef = useRef(false);
+
   /**
-   * Adds a log entry to the logs array
+   * Adds a log entry.
+   * New logs are added at the top (latest first).
    */
   const addLog = useCallback(
     (message: string, type: LogEntry['type'] = 'info') => {
@@ -30,21 +34,24 @@ export function usePipelineExecution() {
         message,
         type,
       };
-      // Add new log at the top of the list
       setLogs((prev) => [logEntry, ...prev]);
     },
     []
   );
 
   /**
-   * Clears all logs
+   * Clears all logs.
    */
   const clearLogs = useCallback(() => {
     setLogs([]);
   }, []);
 
   /**
-   * Executes the pipeline
+   * Executes the pipeline by simulating node execution in topological order.
+   *
+   * @param nodes - Snapshot of nodes (used as source of truth for execution order)
+   * @param edges - Snapshot of edges
+   * @param setNodes - React Flow setNodes state setter
    */
   const executePipeline = useCallback(
     async (
@@ -52,158 +59,79 @@ export function usePipelineExecution() {
       edges: Edge[],
       setNodes: React.Dispatch<React.SetStateAction<Node<PipelineNodeData>[]>>
     ) => {
-      // Prevent multiple executions
-      if (isExecuting) {
-        return;
-      }
+      // Prevent concurrent execution
+      if (isExecutingRef.current) return;
 
+      isExecutingRef.current = true;
       setIsExecuting(true);
       setExecutionStatus('running');
 
+      // Mark the start of a new execution (before validation)
+      // This ensures each execution gets its own list, even if validation fails
+      addLog('Pipeline execution started', 'info');
+
       try {
-        // Step 1: Validate graph
+        // 1) Validate graph before execution
         const validation = validateGraph(nodes, edges);
         if (!validation.valid) {
           setExecutionStatus('error');
           addLog(validation.error || 'Validation failed', 'error');
-          setIsExecuting(false);
           return;
         }
 
-        // Step 2: Reset all nodes to idle
-        setNodes((nds) => {
-          const updated = nds.map((node) => ({
+        // 2) Reset all nodes to idle
+        setNodes((prev) =>
+          prev.map((node) => ({
             ...node,
-            data: {
-              ...node.data,
-              status: 'idle' as NodeStatus,
-            },
-          }));
-          // Force React Flow to detect the change by creating a new array reference
-          return [...updated];
-        });
-        // Small delay to ensure React processes the update
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        addLog('Pipeline execution started', 'info');
+            data: { ...node.data, status: 'idle' as NodeStatus },
+          }))
+        );
 
-        // Step 3: Perform topological sort to get execution order
-        // Wait a bit for nodes state to update after reset
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        // Get fresh nodes state after reset
-        let currentNodesState: Node<PipelineNodeData>[] = [];
-        setNodes((nds) => {
-          currentNodesState = [...nds];
-          return nds;
-        });
-        await new Promise((resolve) => setTimeout(resolve, 50));
-
-        const executionOrder = topologicalSort(currentNodesState, edges);
+        // 3) Determine execution order
+        const executionOrder = topologicalSort(nodes, edges);
         addLog(
           `Execution order determined: ${executionOrder.length} node(s)`,
           'info'
         );
 
-        // Step 4: Execute nodes in order
+        // 4) Execute nodes sequentially
         for (const nodeId of executionOrder) {
-          // Find node in current state
-          const currentNode = currentNodesState.find((n) => n.id === nodeId);
+          const node = nodes.find((n) => n.id === nodeId);
+          if (!node) continue;
 
-          if (!currentNode) {
-            addLog(`Warning: Node ${nodeId} not found, skipping`, 'info');
-            continue;
-          }
+          const { label, type } = node.data;
 
-          const nodeLabel = currentNode.data.label;
-          const nodeType = currentNode.data.type;
+          // Mark node as running
+          setNodes((prev) =>
+            prev.map((n) =>
+              n.id === nodeId
+                ? {
+                    ...n,
+                    data: { ...n.data, status: 'running' as NodeStatus },
+                  }
+                : n
+            )
+          );
+          addLog(generateLogMessage(label, type, 'started'), 'info');
 
-          // Validate node data
-          if (!nodeLabel || !nodeType) {
-            addLog(
-              `Warning: Node ${nodeId} has missing data (label: ${nodeLabel}, type: ${nodeType}), skipping`,
-              'info'
-            );
-            continue;
-          }
+          // Simulate execution delay
+          await simulateNodeExecution(nodeId, label, 1000);
 
-          try {
-            // Mark node as running
-            setNodes((nds) => {
-              const updated = nds.map((node) => {
-                if (node.id === nodeId) {
-                  return {
-                    ...node,
-                    data: {
-                      ...node.data,
-                      status: 'running' as NodeStatus,
-                    },
-                  };
-                }
-                return node;
-              });
-              // Update current state reference
-              currentNodesState = updated;
-              // Force React Flow to detect the change by creating a new array reference
-              return [...updated];
-            });
-            // Small delay to ensure React processes the update
-            await new Promise((resolve) => setTimeout(resolve, 50));
-            addLog(generateLogMessage(nodeLabel, nodeType, 'started'), 'info');
-
-            // Simulate node execution with delay
-            await simulateNodeExecution(nodeId, nodeLabel, 1000);
-
-            // Mark node as completed
-            setNodes((nds) => {
-              const updated = nds.map((node) => {
-                if (node.id === nodeId) {
-                  return {
-                    ...node,
-                    data: {
-                      ...node.data,
-                      status: 'completed' as NodeStatus,
-                    },
-                  };
-                }
-                return node;
-              });
-              // Update current state reference
-              currentNodesState = updated;
-              // Force React Flow to detect the change by creating a new array reference
-              return [...updated];
-            });
-            // Small delay to ensure React processes the update
-            await new Promise((resolve) => setTimeout(resolve, 50));
-            addLog(
-              generateLogMessage(nodeLabel, nodeType, 'completed'),
-              'success'
-            );
-          } catch (error) {
-            // Mark node as error
-            setNodes((nds) => {
-              const updated = nds.map((node) => {
-                if (node.id === nodeId) {
-                  return {
-                    ...node,
-                    data: {
-                      ...node.data,
-                      status: 'error' as NodeStatus,
-                    },
-                  };
-                }
-                return node;
-              });
-              // Force React Flow to detect the change by creating a new array reference
-              return [...updated];
-            });
-            addLog(generateLogMessage(nodeLabel, nodeType, 'error'), 'error');
-            setExecutionStatus('error');
-            setIsExecuting(false);
-            return; // Stop execution on error
-          }
+          // Mark node as completed
+          setNodes((prev) =>
+            prev.map((n) =>
+              n.id === nodeId
+                ? {
+                    ...n,
+                    data: { ...n.data, status: 'completed' as NodeStatus },
+                  }
+                : n
+            )
+          );
+          addLog(generateLogMessage(label, type, 'completed'), 'success');
         }
 
-        // Step 5: Execution completed successfully
+        // 5) Execution finished successfully
         setExecutionStatus('completed');
         addLog('Pipeline execution completed successfully', 'success');
       } catch (error) {
@@ -215,10 +143,12 @@ export function usePipelineExecution() {
           'error'
         );
       } finally {
+        // Release execution lock
+        isExecutingRef.current = false;
         setIsExecuting(false);
       }
     },
-    [isExecuting, addLog, clearLogs]
+    [addLog]
   );
 
   return {

@@ -22,27 +22,34 @@ const nodeTypes: NodeTypes = {
 };
 
 const FlowCanvas = () => {
-  const { nodes, setNodes, edges, setEdges } = usePipeline();
+  const { nodes, setNodes, edges, setEdges, isExecuting } = usePipeline();
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
+      // Prevent changes during execution
+      if (isExecuting) return;
       setNodes((nds) => applyNodeChanges(changes, nds));
     },
-    [setNodes]
+    [setNodes, isExecuting]
   );
 
   const onEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
+      // Prevent changes during execution
+      if (isExecuting) return;
       setEdges((eds) => applyEdgeChanges(changes, eds));
     },
-    [setEdges]
+    [setEdges, isExecuting]
   );
 
   const onConnect = useCallback(
     (params: Connection) => {
+      // Prevent connections during execution
+      if (isExecuting) return;
+
       // Validate the connection before adding it
       const validation = validateConnection(params, edges);
 
@@ -59,7 +66,7 @@ const FlowCanvas = () => {
       // Connection is valid, add it
       setEdges((eds) => addEdge(params, eds));
     },
-    [setEdges, edges]
+    [setEdges, edges, isExecuting]
   );
 
   const onInit = useCallback((instance: ReactFlowInstance) => {
@@ -75,6 +82,9 @@ const FlowCanvas = () => {
   const onDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
+
+      // Prevent dropping nodes during execution
+      if (isExecuting) return;
 
       const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
       if (!reactFlowBounds || !reactFlowInstance.current) return;
@@ -105,15 +115,15 @@ const FlowCanvas = () => {
         console.error('Error parsing dropped node data:', error);
       }
     },
-    [setNodes]
+    [setNodes, isExecuting]
   );
 
   return (
     <div
       ref={reactFlowWrapper}
       className='flex-1 relative overflow-hidden bg-base-100 min-h-0 w-full'
-      onDragOver={onDragOver}
-      onDrop={onDrop}
+      onDragOver={isExecuting ? undefined : onDragOver}
+      onDrop={isExecuting ? undefined : onDrop}
       style={{ touchAction: 'none' }}
     >
       <ReactFlow
@@ -126,6 +136,10 @@ const FlowCanvas = () => {
         nodeTypes={nodeTypes}
         className='bg-base-100'
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+        nodesDraggable={!isExecuting}
+        nodesConnectable={!isExecuting}
+        elementsSelectable={!isExecuting}
+        selectNodesOnDrag={!isExecuting}
       >
         <Background />
         <Controls />
