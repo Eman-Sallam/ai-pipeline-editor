@@ -5,6 +5,7 @@ import App from './App';
 describe('App', () => {
   it('renders the app', () => {
     render(<App />);
-    expect(screen.getByText(/Vite \+ React/i)).toBeInTheDocument();
+    // Check for the actual app title
+    expect(screen.getByText(/AI Pipeline Editor/i)).toBeInTheDocument();
   });
 });
