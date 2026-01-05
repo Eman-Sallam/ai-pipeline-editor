@@ -66,10 +66,6 @@ export function usePipelineExecution() {
       setIsExecuting(true);
       setExecutionStatus('running');
 
-      // Mark the start of a new execution (before validation)
-      // This ensures each execution gets its own list, even if validation fails
-      addLog('Pipeline execution started', 'info');
-
       try {
         // 1) Validate graph before execution
         const validation = validateGraph(nodes, edges);
@@ -78,6 +74,9 @@ export function usePipelineExecution() {
           addLog(validation.error || 'Validation failed', 'error');
           return;
         }
+
+        // Mark the start of execution (after validation passes)
+        addLog('Pipeline execution started', 'info');
 
         // 2) Reset all nodes to idle
         setNodes((prev) =>
