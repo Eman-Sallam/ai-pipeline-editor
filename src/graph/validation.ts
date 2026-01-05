@@ -19,7 +19,7 @@ export interface ValidationResult {
  * - ✅ Output → input only: Enforce direction (source = output, target = input)
  * - ✅ No self-connections: Prevent node connecting to itself
  * - ✅ One input per node: Each node accepts one input connection only
- * - ✅ Multiple outputs allowed: Allow multiple outgoing connections (branching supported)
+ * - ✅ One output per node: Each node accepts one output connection only
  * - ✅ Prevent cycles: Use DFS to check if new edge creates cycle
  */
 export function validateConnection(
@@ -74,7 +74,20 @@ export function validateConnection(
     };
   }
 
-  // Rule 5: Prevent cycles - check if adding this edge would create a cycle
+  // Rule 5: One output per node - check if source already has an output connection
+  const existingOutputConnection = edges.find(
+    (edge) => edge.source === connection.source
+  );
+
+  if (existingOutputConnection) {
+    return {
+      valid: false,
+      error:
+        'Source node already has an output connection. Each node accepts only one output.',
+    };
+  }
+
+  // Rule 6: Prevent cycles - check if adding this edge would create a cycle
   if (wouldCreateCycle(connection, edges)) {
     return {
       valid: false,

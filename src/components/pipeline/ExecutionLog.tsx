@@ -96,11 +96,11 @@ const ExecutionLog = () => {
                     }`}
                   >
                     <div className='flex flex-col gap-1'>
-                      <span className='text-[8px] font-mono text-base-content/50'>
+                      <span className='text-[10px] font-mono text-base-content/50'>
                         {entry.time}
                       </span>
                       <span
-                        className={`text-[10px] font-mono ${
+                        className={`text-[12px] font-mono ${
                           entry.type === 'error'
                             ? 'text-error'
                             : entry.type === 'success'
