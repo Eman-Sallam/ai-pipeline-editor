@@ -13,7 +13,7 @@ const PipelineNode = ({ data, selected }: NodeProps<PipelineNodeData>) => {
 
   return (
     <div
-      className={`bg-base-100 rounded-lg border-l-4 ${borderColor} min-w-[150px] transition-all ${
+      className={`bg-base-200 rounded-lg border-l-4 ${borderColor} min-w-[180px] transition-all ${
         selected
           ? 'shadow-xl ring-1 ring-gray-400'
           : 'shadow-md hover:shadow-lg'
@@ -33,7 +33,7 @@ const PipelineNode = ({ data, selected }: NodeProps<PipelineNodeData>) => {
 
       {/* Node content */}
       <div className='p-3'>
-        <div className='flex items-center gap-2 mb-2'>
+        <div className='flex items-start gap-2'>
           <div
             className={`p-1.5 rounded-lg ${config.bgColor} flex items-center justify-center`}
           >
@@ -41,26 +41,25 @@ const PipelineNode = ({ data, selected }: NodeProps<PipelineNodeData>) => {
           </div>
           <div className='flex-1 min-w-0'>
             <div className='font-semibold text-sm truncate'>{data.label}</div>
-            <div className='text-xs text-base-content/60'>#{data.type}</div>
-          </div>
-        </div>
 
-        {/* Status indicator */}
-        <div className='flex items-center gap-1.5 mt-2'>
-          <div
-            className={`w-2 h-2 rounded-full ${
-              data.status === 'idle'
-                ? 'bg-base-300'
-                : data.status === 'running'
-                ? 'bg-blue-500 animate-pulse'
-                : data.status === 'completed'
-                ? 'bg-green-500'
-                : 'bg-red-500'
-            }`}
-          />
-          <span className='text-xs text-base-content/70 capitalize'>
-            {data.status}
-          </span>
+            {/* Status indicator */}
+            <div className='flex items-center gap-1.5'>
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  data.status === 'idle'
+                    ? 'bg-gray-400'
+                    : data.status === 'running'
+                    ? 'bg-blue-500 animate-pulse'
+                    : data.status === 'completed'
+                    ? 'bg-green-500'
+                    : 'bg-red-500'
+                }`}
+              />
+              <span className='text-sm text-base-content/70 capitalize'>
+                {data.status}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 

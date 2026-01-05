@@ -2,7 +2,7 @@ import { PlayIcon } from '@heroicons/react/24/solid';
 import { usePipeline } from '../../contexts/PipelineContext';
 
 const EditorHeader = () => {
-  const { executePipeline, isExecuting, executionStatus } = usePipeline();
+  const { executePipeline, isExecuting } = usePipeline();
 
   const handleExecute = async () => {
     await executePipeline();
@@ -20,9 +20,7 @@ const EditorHeader = () => {
       <button
         onClick={handleExecute}
         disabled={isExecuting}
-        className={`btn btn-accent btn-sm flex items-center gap-2 ${
-          isExecuting ? 'loading' : ''
-        }`}
+        className={`btn btn-accent btn-sm flex items-center gap-2 `}
       >
         {isExecuting ? (
           <>
