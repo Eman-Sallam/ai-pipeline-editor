@@ -42,6 +42,36 @@ export function validateGraph(
     };
   }
 
+  // Check for isolated nodes (nodes not connected to any edges)
+  if (nodes.length > 1 && edges.length > 0) {
+    const connectedNodeIds = new Set<string>();
+
+    // Collect all node IDs that are connected via edges
+    edges.forEach((edge) => {
+      if (edge.source) {
+        connectedNodeIds.add(edge.source);
+      }
+      if (edge.target) {
+        connectedNodeIds.add(edge.target);
+      }
+    });
+
+    // Find isolated nodes (nodes not in connectedNodeIds)
+    const isolatedNodes = nodes.filter(
+      (node) => !connectedNodeIds.has(node.id)
+    );
+
+    if (isolatedNodes.length > 0) {
+      const isolatedNodeLabels = isolatedNodes
+        .map((node) => node.data.label || node.id)
+        .join(', ');
+      return {
+        valid: false,
+        error: `Pipeline has disconnected nodes: ${isolatedNodeLabels}. All nodes must be connected.`,
+      };
+    }
+  }
+
   // Check for cycles using DFS
   const graph = new Map<string, string[]>();
   const inDegree = new Map<string, number>();
