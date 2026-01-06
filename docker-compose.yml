@@ -1,10 +1,8 @@
-version: "3.8"
-
 services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile.frontend
+      dockerfile: Dockerfile
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
     container_name: pipeline-frontend
@@ -16,7 +14,7 @@ services:
     networks:
       - pipeline-network
     healthcheck:
-      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost/health"]
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -25,7 +23,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.api
     container_name: pipeline-backend
     ports:
       - "8000:8000"

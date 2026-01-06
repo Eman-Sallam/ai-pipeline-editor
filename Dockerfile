@@ -1,20 +1,40 @@
-# Dockerfile - Containerizes the FastAPI service
-FROM python:3.10-slim
+# Dockerfile - Multi-stage build for the React frontend (Vite + Nginx)
+# Build stage
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Copy application file
-COPY app.py .
+# Copy package files
+COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN pip install --no-cache-dir fastapi uvicorn[standard]
+RUN npm ci
 
-# Expose port
-EXPOSE 8000
+# Copy source files
+COPY . .
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/nodes')" || exit 1
+# Build argument for API URL (defaults to localhost:8000)
+ARG VITE_API_BASE_URL=http://localhost:8000
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
-# Run the application
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM nginx:alpine
+
+# Install wget for health checks
+RUN apk add --no-cache wget
+
+# Copy built files from build stage
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
+
