@@ -85,7 +85,7 @@ This application provides an interactive web-based tool for building AI pipeline
 #### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Eman-Sallam/ai-pipeline-editor.git
 cd ai-pipeline-editor
 ```
 
@@ -135,7 +135,7 @@ Default value: `http://localhost:8000`
 
 - **`Dockerfile`** – Frontend (Vite → Nginx, multi-stage build)
 - **`Dockerfile.api`** – Backend (FastAPI)
-- **`docker-compose.yml`** – Service orchestration
+- **`docker-compose.yml`** – Defines and runs the frontend and backend services
 
 ---
 

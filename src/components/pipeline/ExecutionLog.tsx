@@ -1,19 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { usePipeline } from '../../contexts/PipelineContext';
 
 const ExecutionLog = () => {
   const { logs, clearLogs } = usePipeline();
   const logContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to top when new logs are added
-  useEffect(() => {
-    if (logContainerRef.current) {
-      logContainerRef.current.scrollTop = 0;
-    }
-  }, [logs]);
-
   // Group logs by execution (each execution gets its own ul list)
-  // Since logs are prepended (newest first), reverse to process chronologically
+  // Since logs are prepended (newest first)
   const reversedLogs = [...logs].reverse();
   const groupedExecutions = reversedLogs.reduce((acc, entry) => {
     // Check if this is the start of a new execution
