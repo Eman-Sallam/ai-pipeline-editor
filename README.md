@@ -78,6 +78,21 @@ This application provides an interactive web-based tool for building AI pipeline
 
 ---
 
+## ⚙️ Environment Configuration
+
+The project uses environment variables for configuration. The main variable is:
+
+**`VITE_API_BASE_URL`**: The base URL for the backend API
+
+- **Default value**: `http://localhost:8000`
+- **Important**: This variable is injected at **build time** (not runtime) by Vite
+- Since requests are executed by the browser, use `http://localhost:8000` for local development
+- For Docker deployments, set this variable before building the frontend image
+
+The project includes a `.env.example` file to document the required environment variables.
+
+---
+
 ## 🚀 Setup Instructions
 
 ### Option 1: Local Development (Without Docker)
@@ -140,12 +155,6 @@ docker compose up --build
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
-
-#### Important: API Base URL Configuration
-
-The `VITE_API_BASE_URL` environment variable is injected at **build time** (not runtime). Since requests are executed by the browser, use `http://localhost:8000`.
-
-Default value: `http://localhost:8000`
 
 #### Docker Files
 
@@ -298,10 +307,3 @@ npm run build        # Build for production
 # Testing
 npm test             # Run tests in watch mode
 ```
-
----
-
-### Environment Configuration
-
-The project includes a `.env.example` file to document the required environment variables.
-By default, the frontend is configured to connect to the local mock API at `http://localhost:8000` for local development.
