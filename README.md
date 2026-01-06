@@ -97,12 +97,28 @@ npm install
 
 #### 3. Start the mock API
 
+**Option A: Using Python**
+
 ```bash
-pip install fastapi uvicorn[standard]
-python app.py
+python -m pip install fastapi "uvicorn[standard]"
+python -m uvicorn app:app --reload
 ```
 
-API will be available at: http://localhost:8000
+**Note**: If `python` is not available, use `python3` instead:
+
+```bash
+python3 -m pip install fastapi "uvicorn[standard]"
+python3 -m uvicorn app:app --reload
+```
+
+**Option B: Using Docker (Backend only)**
+
+```bash
+docker build -f Dockerfile.api -t pipeline-api .
+docker run -p 8000:8000 pipeline-api
+```
+
+The API will be available at: **http://localhost:8000**
 
 #### 4. Start the frontend
 
